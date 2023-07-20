@@ -39,8 +39,11 @@ class Event < ApplicationRecord
     user&.woman?
   end
 
-  def female_only?
-    only_woman
+  def set_event_only_woman_if_applicable(current_user, event_params)
+    # current_userが女性でかつparams[:event][:only_woman]がtrueの場合
+    if current_user.woman? && event_params[:only_woman] == "true"
+      self.event_only_woman = true
+    end
   end
   
 end

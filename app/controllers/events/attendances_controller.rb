@@ -6,7 +6,6 @@ class Events::AttendancesController < ApplicationController
 
     if @event_only_woman? && !current_user.woman?
       redirect_back(fallback_location: root_path, alert: '女性限定のイベントです')
-      return
     end
 
     event_attendance = current_user.attend(@event)

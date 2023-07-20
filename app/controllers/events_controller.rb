@@ -30,12 +30,7 @@ class EventsController < ApplicationController
   def create
     @event = current_user.events.build(event_params)
 
-    # ユーザーが女性かつOnly womanがチェックされた場合のみ、女性限定のイベントとして保存する
-    if current_user.woman? && params[:event][:only_woman] == "1"
-      @event_only_woman = true
-    end
-    ## 一行で書く
-    @event_only_woman = true if current_user.woman? && params[:event][:only_woman] == "1"
+    @event.set_event_only_woman_if_applicable(current_user, params[:event])
 
     if @event.save
       User.all.find_each do |user|
