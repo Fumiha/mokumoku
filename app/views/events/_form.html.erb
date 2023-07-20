@@ -22,7 +22,7 @@
     <%= image_tag f.object.decorate.thumbnail, id: 'preview-target', class: 'w-100 border' %>
   </div>
 
-  <% if current_user&.woman? %>
+  <% if current_user && current_user.woman? %>
     <div class="mb-3">
       <%= f.check_box :only_woman, { value: "true" }, id: 'event_only_woman', class: 'form-check-label', for: 'flexCheckDefault' %>
       <%= f.label :only_woman %>

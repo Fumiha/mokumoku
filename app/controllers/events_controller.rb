@@ -5,6 +5,7 @@ class EventsController < ApplicationController
     @q = Event.future.ransack(params[:q])
     @events = @q.result(distinct: true).includes(:bookmarks, :prefecture, user: { avatar_attachment: :blob })
                 .order(created_at: :desc).page(params[:page])
+    @woman_only_events = Event.woman_only_events
   end
 
   def future
