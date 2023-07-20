@@ -5,6 +5,7 @@ class EventsController < ApplicationController
     @q = Event.future.ransack(params[:q])
     @events = @q.result(distinct: true).includes(:bookmarks, :prefecture, user: { avatar_attachment: :blob })
                 .order(created_at: :desc).page(params[:page])
+    @woman_only_events = Event.woman_only_events
   end
 
   def future
@@ -29,6 +30,9 @@ class EventsController < ApplicationController
 
   def create
     @event = current_user.events.build(event_params)
+
+    @event.set_event_only_woman_if_applicable(current_user, params[:event])
+
     if @event.save
       User.all.find_each do |user|
         NotificationFacade.created_event(@event, user)
@@ -60,6 +64,6 @@ class EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:title, :content, :held_at, :prefecture_id, :thumbnail)
+    params.require(:event).permit(:title, :content, :held_at, :prefecture_id, :thumbnail, :only_woman,)
   end
 end

@@ -2,6 +2,7 @@
 
 class Event < ApplicationRecord
   include Notifiable
+  attribute :only_woman, :boolean
   belongs_to :prefecture
   belongs_to :user
   has_many :comments, dependent: :destroy
@@ -13,6 +14,7 @@ class Event < ApplicationRecord
 
   scope :future, -> { where('held_at > ?', Time.current) }
   scope :past, -> { where('held_at <= ?', Time.current) }
+  scope :woman_only_events, -> { where(only_woman: true) }
 
   with_options presence: true do
     validates :title
@@ -27,4 +29,16 @@ class Event < ApplicationRecord
   def future?
     !past?
   end
+
+  def woman_only?
+    only_woman
+  end
+
+  def set_event_only_woman_if_applicable(current_user, event_params)
+    # current_userが女性でかつparams[:event][:only_woman]がtrueの場合
+    if current_user.woman? && event_params[:only_woman] == "true"
+      self.event_only_woman = true
+    end
+  end
+  
 end
